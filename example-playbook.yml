@@ -1,0 +1,36 @@
+---
+
+- hosts: localhost
+  connection: local
+  tasks:
+
+    - name: Create host smtp.adm
+      centreon_host:
+        state: present
+        name: smtp.adm
+        poller: Central
+        host_ip: 10.69.0.75
+        username: admin
+        hostgroups:
+          - All
+          - All-System
+        host_templates:
+          - Generic
+          - Generic-Linux
+          - Generic-Linux-SMTP
+        password: "{{ admin_centreon_pass }}"
+        reload_conf: yes
+
+    - name: Create service Memory for host smtp.adm
+      centreon_service:
+        state: present
+        host: smtp.adm
+        name: Memory
+        poller: Central
+        service_template: NRPE-Linux-Memory
+        macros:
+          - CRITICAL;80
+          - WARNING;70
+        username: admin
+        password: "{{ admin_centreon_pass }}"
+        reload_conf: no
