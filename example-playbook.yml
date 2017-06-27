@@ -20,19 +20,34 @@
           - Generic
           - Generic-Linux
           - Generic-Linux-Debian
-        password: {{ centreon_admin_password }}
-        reload_conf: yes
+        password: "{{ vault_centreon_admin_password }}"
+        reload_conf: no
 
-    - name: Create service Memory for host dml.common
+    - name: Create service diskfree for host dml.common
       centreon_service:
         state: present
-        host: sdml.common
-        name: Memory
+        host: dml.common
+        name: Disk-Free-/srv/dml
         poller: Central
-        service_template: NRPE-Linux-Memory
+        service_template: NRPE-Linux-DiskFree-Mountpoint
         macros:
-          - CRITICAL;80
-          - WARNING;70
+          - CRITICAL;15%
+          - WARNING;20%
+          - DISK;/srv/dml
         username: admin
-        password: "{{ admin_centreon_pass }}"
+        password: "{{ vault_centreon_admin_password }}"
         reload_conf: no
+
+    - name: Create service export for host dml.common
+      centreon_service:
+        state: present
+        host: dml.common
+        name: Export-/srv/dml
+        poller: Central
+        service_template: NRPE-NFS-Exports
+        macros:
+          - NFSHOST;localhost
+          - PATH;/srv/dml
+        username: admin
+        password: "{{ vault_centreon_admin_password }}"
+        reload_conf: yes
