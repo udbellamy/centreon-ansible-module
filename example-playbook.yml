@@ -4,27 +4,29 @@
   connection: local
   tasks:
 
-    - name: Create host smtp.adm
+    - name: Create host dml.common
       centreon_host:
         state: present
-        name: smtp.adm
+        name: dml.common
         poller: Central
-        host_ip: 10.69.0.75
+        host_ip: 10.69.XX.XXX
         username: admin
         hostgroups:
           - All
-          - All-System
+          - All-Servers
+          - All-Servers-Linux
+          - All-Servers-Linux-Debian
         host_templates:
           - Generic
           - Generic-Linux
-          - Generic-Linux-SMTP
-        password: "{{ admin_centreon_pass }}"
+          - Generic-Linux-Debian
+        password: {{ centreon_admin_password }}
         reload_conf: yes
 
-    - name: Create service Memory for host smtp.adm
+    - name: Create service Memory for host dml.common
       centreon_service:
         state: present
-        host: smtp.adm
+        host: sdml.common
         name: Memory
         poller: Central
         service_template: NRPE-Linux-Memory
